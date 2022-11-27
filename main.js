@@ -17,9 +17,5 @@ const numberOfCellsV = getNumberOfCells(gridHeight, 5);
 
 const grid = new Grid(gridWidth, gridHeight, ctx)
 
-grid.getNewGenerationOfCells();
-grid.draw();
 
 console.log(gridHeight, gridWidth);
-
-console.log(numberOfCellsG, numberOfCellsV)

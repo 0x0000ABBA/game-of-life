@@ -8,7 +8,7 @@ class Grid {
     ctx;
     widthOfCell;
 
-    constructor(width, height, ctx, generation = 0, cells, widthOfCell = 100) {
+    constructor(width, height, ctx, generation = 0, cells, widthOfCell = 10) {
         this.width = width;
         this.height = height;
         this.generation = generation;
@@ -26,12 +26,12 @@ class Grid {
         this.getCells();
         this.draw();
 
-        setInterval(()=> {
+        setInterval(() => {
             this.getNewGenerationOfCells();
+            this.ctx.clearRect(0, 0, this.width, this.height)
             this.draw();
-            console.log("new gen")
-            console.log(this.cells)
-        }, 1000)
+
+        }, 400)
     };
 
     getNewGenerationOfCells = () => {
@@ -47,20 +47,16 @@ class Grid {
         ];
         this.cells = this.cells.map((xValues, y) => {
             if (xValues) {
-                xValues.map((cell, x) => {
+                return xValues.map((cell, x) => {
                     let aliveNeighbours = 0;
                     neighbours.forEach(coords => {
                         if (y + coords[0] < this.cells.length && y + coords[0] > 0 && x + coords[1] > 0 && x + coords[1] < xValues.length) {
-                            console.log(this.cells[y + coords[0]][x + coords[1]].isAlive)
                             if (this.cells[y + coords[0]][x + coords[1]].isAlive) {
                                 aliveNeighbours++;
                             }
                         }
                     })
                     switch (aliveNeighbours) {
-                        case 2:
-                            if (cell.isAlive) cell.isAlive = true;
-                            break;
                         case 3:
                             cell.isAlive = true;
                             break;
@@ -70,10 +66,10 @@ class Grid {
                     }
                     return cell;
                 });
+
             }
 
         });
-
     };
 
     getCells = () => {
@@ -81,8 +77,8 @@ class Grid {
         for (let i = 0; i < this.numberOfCellsV; i++) {
             this.cells[i] = [];
             for (let j = 0; j < this.numberOfCellsG; j++) {
-                this.cells[i][j] = new Cell(true, i, j);
-            }   
+                this.cells[i][j] = new Cell(Math.random() > 0.5 ? true : false, i, j);
+            }
         }
     };
 
