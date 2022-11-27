@@ -8,8 +8,4 @@ class Cell {
         this.cX = cX;
         this.cY = cY;
     };
-
-    switch = () => {
-        this.isAlive = !this.isAlive
-    }
 }

@@ -7,13 +7,15 @@ class Grid {
     numberOfCellsG;
     ctx;
     widthOfCell;
+    isGameOver;
 
-    constructor(width, height, ctx, generation = 0, cells, widthOfCell = 10) {
+    constructor(width, height, ctx, generation = 1, cells, widthOfCell = 10) {
         this.width = width;
         this.height = height;
         this.generation = generation;
         this.ctx = ctx;
         this.widthOfCell = widthOfCell;
+        this.isGameOver = false;
 
         if (cells) {
             this.cells = cells;
@@ -25,38 +27,48 @@ class Grid {
 
         this.getCells();
         this.draw();
+        this.update(100);
+    };
 
+    update = (delay) => {
         setInterval(() => {
             this.getNewGenerationOfCells();
             this.ctx.clearRect(0, 0, this.width, this.height)
             this.draw();
-
-        }, 400)
-    };
+            console.log("This is generation #" + this.generation)
+            this.generation += 1
+        }, delay)
+    }
 
     getNewGenerationOfCells = () => {
         const neighbours = [
-            [-1, 1],
-            [0, 1],
-            [1, 1],
-            [1, 0],
-            [1, -1],
-            [0, -1],
             [-1, -1],
-            [-1, 0]
+            [0, -1],
+            [1, -1],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [-1, 1],
+            [-1, 0],
+            [-1, -1]
         ];
-        this.cells = this.cells.map((xValues, y) => {
+        const newCells = this.cells.map((xValues, y) => {
             if (xValues) {
                 return xValues.map((cell, x) => {
+                    const neighboursForStat = [];
                     let aliveNeighbours = 0;
-                    neighbours.forEach(coords => {
-                        if (y + coords[0] < this.cells.length && y + coords[0] > 0 && x + coords[1] > 0 && x + coords[1] < xValues.length) {
-                            if (this.cells[y + coords[0]][x + coords[1]].isAlive) {
+                    neighbours.forEach((coordDiff) => {
+                        if (y + coordDiff[1] < this.cells.length && y + coordDiff[1] >= 0 && x + coordDiff[0] >= 0 && x + coordDiff[0] < xValues.length) {
+                            if (this.cells[y + coordDiff[1]][x + coordDiff[0]].isAlive) {
+                                neighboursForStat.push(this.cells[y + coordDiff[1]][x + coordDiff[0]])
                                 aliveNeighbours++;
                             }
                         }
                     })
                     switch (aliveNeighbours) {
+                        case 2:
+                            cell.isAlive ? cell.isAlive = true : cell.isAlive = false;
+                            break;
                         case 3:
                             cell.isAlive = true;
                             break;
@@ -64,11 +76,10 @@ class Grid {
                             cell.isAlive = false;
                             break;
                     }
+                    // console.log(cell, neighboursForStat)
                     return cell;
                 });
-
             }
-
         });
     };
 
@@ -95,5 +106,5 @@ class Grid {
         });
     };
 
-    getNumberOfCells = (cellWidth, length) => (length - length % cellWidth * 1.1) / cellWidth * 1.1;
+    getNumberOfCells = (cellWidth, length) => (length - length % cellWidth * 1.1) / (cellWidth * 1.1);
 }
