@@ -60,7 +60,6 @@ class Grid {
                     neighbours.forEach((coordDiff) => {
                         if (y + coordDiff[1] < this.cells.length && y + coordDiff[1] >= 0 && x + coordDiff[0] >= 0 && x + coordDiff[0] < xValues.length) {
                             if (this.cells[y + coordDiff[1]][x + coordDiff[0]].isAlive) {
-                                neighboursForStat.push(this.cells[y + coordDiff[1]][x + coordDiff[0]])
                                 aliveNeighbours++;
                             }
                         }
@@ -76,7 +75,6 @@ class Grid {
                             cell.isAlive = false;
                             break;
                     }
-                    // console.log(cell, neighboursForStat)
                     return cell;
                 });
             }
